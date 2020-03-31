@@ -60,7 +60,7 @@ def get_syn_and_ack_numbers(request):
     print "-----------\r\n"    
 
 parser = argparse.ArgumentParser()
-parser.add_argument("-r", "--read", help="read pcapfile",action="store", dest="pcap")
+parser.add_argument("-r", "--read", help="read pcapfile",action="store", dest="pcap", required=True)
 args = parser.parse_args()
 
 packets = rdpcap(args.pcap)
