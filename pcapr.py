@@ -4,7 +4,7 @@ from scapy.all import *
 import argparse
 response_payload_len = 0
 
-def get_syn_and_ack_numbers(request):
+def process_pcap(request):
     FIN = 0x01
     SYN = 0x02
     RST = 0x04
@@ -67,5 +67,5 @@ packets = rdpcap(args.pcap)
 
 #iterate through packets
 for packet in packets:
-    get_syn_and_ack_numbers(packet)
+    process_pcap(packet)
     
