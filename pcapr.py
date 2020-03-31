@@ -2,6 +2,10 @@
 
 from scapy.all import *
 import argparse
+
+load_layer("tls")
+load_layer("http")
+
 payload_len = 0
 
 def process_pcap(pcap):
@@ -23,7 +27,7 @@ def process_pcap(pcap):
         print "Ether Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst
 
     if pcap.haslayer(IP):
-        print "IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id)
+        print "IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl)
 
     if pcap.haslayer(UDP):
         print "UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport)   
@@ -37,7 +41,7 @@ def process_pcap(pcap):
         print "TCP - Source Port: " + str(pcap[TCP].sport) + "  Destination Port: " + str(pcap[TCP].dport)
         print "Response seq: " + str(sequence_number) + " ack: " + \
               str(acknowledgement_number) + " timestamp: " + str(timestamp) + " len: " + \
-              str(len(pcap[TCP].payload)) 
+              str(len(pcap[TCP].payload)) + " window: " + str(pcap[TCP].window) + " options: " + str(pcap[TCP].options)
         F = pcap['TCP'].flags    
         print "Flags: ",
         if F & FIN:
@@ -55,8 +59,23 @@ def process_pcap(pcap):
         if F & ECE:
             print "ECE",
         if F & CWR:
-            print "CWR", 
-        print "\r\n"        
+            print "CWR"
+        print "\r\n"  
+
+    if pcap.haslayer(HTTP):  
+        print "HTTP - " + pcap[HTTP].method
+
+    if pcap.haslayer(ARP):   
+        print "ARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op)
+
+    if pcap.haslayer(DNS):   
+        print "DNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar)
+    
+    if pcap.haslayer(TLS):   
+        print "TLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version),
+        if "TLSApplicationData" not in  str(pcap[TLS].msg):
+            print " -  Message: " + str(pcap[TLS].msg)
+     
     print "-----------\r\n"    
 
 parser = argparse.ArgumentParser()
