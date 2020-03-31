@@ -2,9 +2,9 @@
 
 from scapy.all import *
 import argparse
-response_payload_len = 0
+payload_len = 0
 
-def process_pcap(request):
+def process_pcap(pcap):
     FIN = 0x01
     SYN = 0x02
     RST = 0x04
@@ -14,31 +14,31 @@ def process_pcap(request):
     ECE = 0x40
     CWR = 0x80
 
-    global response_sequence_number
-    global response_acknowledgement_number
-    global response_timestamp
-    global response_payload_len
+    global sequence_number
+    global acknowledgement_number
+    global timestamp
+    global payload_len
 
-    if request.haslayer(Ether):
-        print "Ether Src: " + request[Ether].src + " - Ether Dst: " + request[Ether].dst
+    if pcap.haslayer(Ether):
+        print "Ether Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst
 
-    if request.haslayer(IP):
-        print "IP Src: " + request[IP].src + " - IP Dst: " + request[IP].dst + " - IP ID: " + str(request[IP].id)
+    if pcap.haslayer(IP):
+        print "IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id)
 
-    if request.haslayer(UDP):
-        print "UDP - Source Port: " + str(request[UDP].sport) + "  Destination Port: " + str(request[UDP].dport)   
+    if pcap.haslayer(UDP):
+        print "UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport)   
 
-    if request.haslayer(TCP):
-        response_sequence_number = request[TCP].seq
-        response_acknowledgement_number = request[TCP].ack
-        response_timestamp = request[TCP].time
-        response_payload_len += len(request[TCP].payload)
+    if pcap.haslayer(TCP):
+        sequence_number = pcap[TCP].seq
+        acknowledgement_number = pcap[TCP].ack
+        timestamp = pcap[TCP].time
+        payload_len += len(pcap[TCP].payload)
         
-        print "TCP - Source Port: " + str(request[TCP].sport) + "  Destination Port: " + str(request[TCP].dport)
-        print "Response seq: " + str(response_sequence_number) + " ack: " + \
-              str(response_acknowledgement_number) + " timestamp: " + str(response_timestamp) + " len: " + \
-              str(len(request[TCP].payload)) 
-        F = request['TCP'].flags    
+        print "TCP - Source Port: " + str(pcap[TCP].sport) + "  Destination Port: " + str(pcap[TCP].dport)
+        print "Response seq: " + str(sequence_number) + " ack: " + \
+              str(acknowledgement_number) + " timestamp: " + str(timestamp) + " len: " + \
+              str(len(pcap[TCP].payload)) 
+        F = pcap['TCP'].flags    
         print "Flags: ",
         if F & FIN:
             print "FIN",
