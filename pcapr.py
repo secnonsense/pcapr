@@ -24,13 +24,13 @@ def process_pcap(pcap):
     global payload_len
 
     if pcap.haslayer(Ether):
-        print "Ether Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst
+        print "Ether Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst,
 
     if pcap.haslayer(IP):
-        print "IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl)
+        print "\r\nIP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl)
 
     if pcap.haslayer(UDP):
-        print "UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport)   
+        print "UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport),   
 
     if pcap.haslayer(TCP):
         sequence_number = pcap[TCP].seq
@@ -60,23 +60,26 @@ def process_pcap(pcap):
             print "ECE",
         if F & CWR:
             print "CWR"
-        print "\r\n"  
+         
 
     if pcap.haslayer(HTTP):  
-        print "HTTP - " + pcap[HTTP].method
+        print "\r\nHTTP - " + pcap[HTTP].method,
 
     if pcap.haslayer(ARP):   
-        print "ARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op)
+        print "\r\nARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op),
 
     if pcap.haslayer(DNS):   
-        print "DNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar)
+        print "\r\nDNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar),
     
     if pcap.haslayer(TLS):   
-        print "TLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version),
+        print "\r\nTLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version),
         if "TLSApplicationData" not in  str(pcap[TLS].msg):
-            print " -  Message: " + str(pcap[TLS].msg)
-     
-    print "-----------\r\n"    
+            print " -  Message: " + str(pcap[TLS].msg), 
+        #else:
+        #     print "\r\n"
+
+    
+    print "\r\n-----------\r\n"    
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--read", help="read pcapfile",action="store", dest="pcap", required=True)
