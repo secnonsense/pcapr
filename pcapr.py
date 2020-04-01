@@ -24,7 +24,7 @@ def process_pcap(pcap):
     global payload_len
 
     if pcap.haslayer(Ether):
-        print "Ether Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst,
+        print "Ether Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type)),
 
     if pcap.haslayer(IP):
         print "\r\nIP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl)
@@ -75,9 +75,6 @@ def process_pcap(pcap):
         print "\r\nTLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version),
         if "TLSApplicationData" not in  str(pcap[TLS].msg):
             print " -  Message: " + str(pcap[TLS].msg), 
-        #else:
-        #     print "\r\n"
-
     
     print "\r\n-----------\r\n"    
 
