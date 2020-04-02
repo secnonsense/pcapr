@@ -76,7 +76,7 @@ def process_pcap(pcap):
         if "TLSApplicationData" not in  str(pcap[TLS].msg):
             print " -  Message: " + str(pcap[TLS].msg), 
     
-    print "\r\n-----------\r\n"    
+    print "\r\n------------\r\n"    
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--read", help="read pcapfile",action="store", dest="pcap", required=True)
