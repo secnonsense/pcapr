@@ -7,6 +7,7 @@ load_layer("tls")
 load_layer("http")
 
 payload_len = 0
+protocols = []
 
 def process_pcap(pcap):
     FIN = 0x01
