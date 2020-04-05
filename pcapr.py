@@ -44,17 +44,17 @@ def process_pcap(pcap):
 
     if pcap.haslayer(Ether):
         if not query or args.Ether or layer > 1:
-            print "\r\nEther Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type)),
+            print ("\r\nEther Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type))),
     
 
     if pcap.haslayer(IP):
         if not query or args.IP or layer > 2:
-            print "\r\nIP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl)
+            print ("IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl))
         
 
     if pcap.haslayer(UDP):
         if not query or args.UDP or layer > 3:
-            print "UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport),   
+            print ("UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport)),   
         
 
     if pcap.haslayer(TCP):
@@ -65,50 +65,50 @@ def process_pcap(pcap):
         if not query or args.TCP or layer > 3:
         
         
-            print "TCP - Source Port: " + str(pcap[TCP].sport) + "  Destination Port: " + str(pcap[TCP].dport)
-            print "Response seq: " + str(sequence_number) + " ack: " + \
+            print ("TCP - Source Port: " + str(pcap[TCP].sport) + "  Destination Port: " + str(pcap[TCP].dport))
+            print ("Response seq: " + str(sequence_number) + " ack: " + \
                 str(acknowledgement_number) + " timestamp: " + str(timestamp) + " len: " + \
-                str(len(pcap[TCP].payload)) + " window: " + str(pcap[TCP].window) + " options: " + str(pcap[TCP].options)
+                str(len(pcap[TCP].payload)) + " window: " + str(pcap[TCP].window) + " options: " + str(pcap[TCP].options))
             F = pcap['TCP'].flags    
-            print "Flags: ",
+            print ("Flags: "),
             if F & FIN:
-                print "FIN",
+                print ("FIN"),
             if F & SYN:
-                print "SYN",
+                print ("SYN"),
             if F & RST:
-                print "RST",
+                print ("RST"),
             if F & ACK:
-                print "ACK",
+                print ("ACK"),
             if F & PSH:
-                print "PSH",
+                print ("PSH"),
             if F & URG:
-                print "URG",        
+                print ("URG"),        
             if F & ECE:
-                print "ECE",
+                print ("ECE"),
             if F & CWR:
-                print "CWR"
+                print ("CWR")
                    
 
-    if pcap.haslayer(HTTP) or layer > 4:  
-        if not query or args.HTTP:
-            print "\r\nHTTP - " + pcap[HTTP].method
+    if pcap.haslayer(HTTP):  
+        if not query or args.HTTP or layer > 4:
+            print ("\r\nHTTP - " + str(pcap[HTTP]))
         
 
     if pcap.haslayer(ARP):  
         if not query or args.ARP or layer > 1: 
-            print "\r\nARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op)
+            print ("\r\nARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op))
         
 
     if pcap.haslayer(DNS):
         if not query or args.DNS or layer > 4:   
-            print "\r\nDNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar) + "\r\n"
+            print ("\r\nDNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar) + "\r\n")
     
 
     if pcap.haslayer(TLS): 
         if not query or args.TLS or layer > 4:  
-            print "\r\nTLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version)
+            print ("\r\nTLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version))
             if "TLSApplicationData" not in  str(pcap[TLS].msg):
-                print " -  Message: " + str(pcap[TLS].msg)
+                print (" -  Message: " + str(pcap[TLS].msg))
           
 
 parser = argparse.ArgumentParser()
