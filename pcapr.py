@@ -22,19 +22,38 @@ def process_pcap(pcap):
     global acknowledgement_number
     global timestamp
     global payload_len
+    query = 1
+    layer = 0
+
+    if not args.Ether and not args.IP and not args.UDP and not args.ARP and not args.TCP and not args.DNS and not args.TLS and not args.HTTP:
+        query=None
+    if args.ARP and pcap.haslayer(ARP):
+        layer=2
+    if args.IP and pcap.haslayer(IP):
+        layer=3
+    if args.TCP and pcap.haslayer(TCP):
+        layer=4    
+    if args.UDP and pcap.haslayer(UDP):
+        layer=4     
+    if args.DNS and pcap.haslayer(DNS):
+        layer=7
+    if args.TLS and pcap.haslayer(TLS):
+        layer=7
+    if args.HTTP and pcap.haslayer(HTTP):
+        layer=7
 
     if pcap.haslayer(Ether):
-        if not args.query or "Ether" in args.query or (pcap.haslayer(DNS) and "DNS" in args.query):
+        if not query or args.Ether or layer > 1:
             print "\r\nEther Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type)),
     
 
     if pcap.haslayer(IP):
-        if not args.query or "IP" in args.query or (pcap.haslayer(DNS) and "DNS" in args.query):
+        if not query or args.IP or layer > 2:
             print "\r\nIP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl)
         
 
     if pcap.haslayer(UDP):
-        if not args.query or "UDP" in args.query or (pcap.haslayer(DNS) and "DNS" in args.query):
+        if not query or args.UDP or layer > 3:
             print "UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport),   
         
 
@@ -42,8 +61,8 @@ def process_pcap(pcap):
         sequence_number = pcap[TCP].seq
         acknowledgement_number = pcap[TCP].ack
         timestamp = pcap[TCP].time
-        payload_len += len(pcap[TCP].payload)
-        if not args.query or "TCP" in args.query:
+        #payload_len += len(pcap[TCP].payload)
+        if not query or args.TCP or layer > 3:
         
         
             print "TCP - Source Port: " + str(pcap[TCP].sport) + "  Destination Port: " + str(pcap[TCP].dport)
@@ -70,34 +89,38 @@ def process_pcap(pcap):
                 print "CWR"
                    
 
-    if pcap.haslayer(HTTP):  
-        if not args.query or "HTTP" in args.query:
+    if pcap.haslayer(HTTP) or layer > 4:  
+        if not query or args.HTTP:
             print "\r\nHTTP - " + pcap[HTTP].method
         
 
     if pcap.haslayer(ARP):  
-        if not args.query or "ARP" in args.query: 
+        if not query or args.ARP or layer > 1: 
             print "\r\nARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op)
         
 
     if pcap.haslayer(DNS):
-        if not args.query or "DNS" in args.query:   
+        if not query or args.DNS or layer > 4:   
             print "\r\nDNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar) + "\r\n"
     
 
     if pcap.haslayer(TLS): 
-        if not args.query or "TLS" in args.query:  
+        if not query or args.TLS or layer > 4:  
             print "\r\nTLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version)
             if "TLSApplicationData" not in  str(pcap[TLS].msg):
                 print " -  Message: " + str(pcap[TLS].msg)
-        
-    #if (not pcap.haslayer(HTTP) and not pcap.haslayer(ARP)) and pcap.haslayer(TCP):
-     #   print "\r\n"
-    #print "\r\n------------\r\n"    
+          
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-r", "--read", help="read pcapfile",action="store", dest="pcap", required=True)
-parser.add_argument("-q", "--query", help="Query for protocols to print",action="store", dest="query")
+parser.add_argument("-e", "--ether", help="Query Layer 2 protocol",action="store_true", dest="Ether")
+parser.add_argument("-i", "--ip", help="Query IP protocol",action="store_true", dest="IP")
+parser.add_argument("-u", "--udp", help="Query UDP protocol",action="store_true", dest="UDP")
+parser.add_argument("-a", "--arp", help="Query ARP protocol",action="store_true", dest="ARP")
+parser.add_argument("-d", "--dns", help="Query DNS protocol",action="store_true", dest="DNS")
+parser.add_argument("-t", "--tcp", help="Query TCP protocol",action="store_true", dest="TCP")
+parser.add_argument("-w", "--http", help="Query HTTP protocol",action="store_true", dest="HTTP")
+parser.add_argument("-s", "--tls", help="Query TLS protocol",action="store_true", dest="TLS")
 args = parser.parse_args()
 
 packets = rdpcap(args.pcap)
