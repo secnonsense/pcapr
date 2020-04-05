@@ -44,7 +44,7 @@ def process_pcap(pcap):
 
     if pcap.haslayer(Ether):
         if not query or args.Ether or layer > 1:
-            print ("\r\nEther Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type))),
+            print ("\r\nEther Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type)))
     
 
     if pcap.haslayer(IP):
@@ -54,7 +54,7 @@ def process_pcap(pcap):
 
     if pcap.haslayer(UDP):
         if not query or args.UDP or layer > 3:
-            print ("UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport)),   
+            print ("UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport))   
         
 
     if pcap.haslayer(TCP):
@@ -70,21 +70,21 @@ def process_pcap(pcap):
                 str(acknowledgement_number) + " timestamp: " + str(timestamp) + " len: " + \
                 str(len(pcap[TCP].payload)) + " window: " + str(pcap[TCP].window) + " options: " + str(pcap[TCP].options))
             F = pcap['TCP'].flags    
-            print ("Flags: "),
+            print ("Flags: ")
             if F & FIN:
-                print ("FIN"),
+                print ("FIN")
             if F & SYN:
-                print ("SYN"),
+                print ("SYN")
             if F & RST:
-                print ("RST"),
+                print ("RST")
             if F & ACK:
-                print ("ACK"),
+                print ("ACK")
             if F & PSH:
-                print ("PSH"),
+                print ("PSH")
             if F & URG:
-                print ("URG"),        
+                print ("URG")       
             if F & ECE:
-                print ("ECE"),
+                print ("ECE")
             if F & CWR:
                 print ("CWR")
                    
