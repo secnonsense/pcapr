@@ -61,7 +61,7 @@ def process_pcap(pcap):
         sequence_number = pcap[TCP].seq
         acknowledgement_number = pcap[TCP].ack
         timestamp = pcap[TCP].time
-        #payload_len += len(pcap[TCP].payload)
+        payload_len += len(pcap[TCP].payload)
         if not query or args.TCP or layer > 3:
         
         
@@ -91,22 +91,22 @@ def process_pcap(pcap):
 
     if pcap.haslayer(HTTP):  
         if not query or args.HTTP or layer > 4:
-            print ("\r\nHTTP - " + str(pcap[HTTP]))
+            print ("HTTP - " + str(pcap[HTTP]))
         
 
     if pcap.haslayer(ARP):  
         if not query or args.ARP or layer > 1: 
-            print ("\r\nARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op))
+            print ("ARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op))
         
 
     if pcap.haslayer(DNS):
         if not query or args.DNS or layer > 4:   
-            print ("\r\nDNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar) + "\r\n")
+            print ("DNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar) + "\r\n")
     
 
     if pcap.haslayer(TLS): 
         if not query or args.TLS or layer > 4:  
-            print ("\r\nTLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version))
+            print ("TLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version))
             if "TLSApplicationData" not in  str(pcap[TLS].msg):
                 print (" -  Message: " + str(pcap[TLS].msg))
           
