@@ -55,6 +55,11 @@ def process_pcap(pcap):
             pmatch2=1
         if (str(pcap[TCP].sport)==args.PRT_SRC or str(pcap[TCP].dport)==args.PRT_DST) and not (args.PRT_DST and args.PRT_SRC):
             pmatch=1
+    if pcap.haslayer(UDP):
+        if str(pcap[UDP].sport)==args.PRT_SRC and str(pcap[UDP].dport)==args.PRT_DST:
+            pmatch2=1
+        if (str(pcap[UDP].sport)==args.PRT_SRC or str(pcap[UDP].dport)==args.PRT_DST) and not (args.PRT_DST and args.PRT_SRC):
+            pmatch=1        
             
   
     
