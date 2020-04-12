@@ -53,6 +53,8 @@ def process_pcap(pcap):
     if pcap.haslayer(TCP):
         if str(pcap[TCP].sport)==args.PRT_SRC and str(pcap[TCP].dport)==args.PRT_DST:
             pmatch2=1
+        elif str(pcap[TCP].sport)==args.PRT_DST and str(pcap[TCP].dport)==args.PRT_SRC and args.stream:
+            pmatch2=1
         if (str(pcap[TCP].sport)==args.PRT_SRC or str(pcap[TCP].dport)==args.PRT_DST) and not (args.PRT_DST and args.PRT_SRC):
             pmatch=1
     if pcap.haslayer(UDP):
@@ -143,6 +145,7 @@ parser.add_argument("-u", "--udp", help="Query UDP protocol",action="store_true"
 parser.add_argument("-a", "--arp", help="Query ARP protocol",action="store_true", dest="ARP")
 parser.add_argument("-d", "--dns", help="Query DNS protocol",action="store_true", dest="DNS")
 parser.add_argument("-t", "--tcp", help="Query TCP protocol",action="store_true", dest="TCP")
+parser.add_argument("-st", "--stream", help="Follow TCP stream (requires src and dst ports)",action="store_true", dest="stream")
 parser.add_argument("-w", "--http", help="Query HTTP protocol",action="store_true", dest="HTTP")
 parser.add_argument("-s", "--tls", help="Query TLS protocol",action="store_true", dest="TLS")
 parser.add_argument("-ps", "--port_source", help="Query for source port",action="store", dest="PRT_SRC")
