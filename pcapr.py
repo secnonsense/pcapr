@@ -25,6 +25,7 @@ def process_pcap(pcap):
     query = 1
     layer = 0
     match=0
+    match2=0
 
     if not args.Ether and not args.IP and not args.UDP and not args.ARP and not args.TCP and not args.DNS and not args.TLS and not args.HTTP and not args.IP_SRC and not args.IP_DST:
         query=None
@@ -43,21 +44,23 @@ def process_pcap(pcap):
     if args.HTTP and pcap.haslayer(HTTP):
         layer=7
     
-    if pcap.haslayer(IP) and (pcap[IP].src==args.IP_SRC or pcap[IP].dst==args.IP_DST):
+    if pcap.haslayer(IP) and pcap[IP].src==args.IP_SRC and pcap[IP].dst==args.IP_DST:
+        match2=1
+    if pcap.haslayer(IP) and (pcap[IP].src==args.IP_SRC or pcap[IP].dst==args.IP_DST) and not args.IP_SRC and not args.IP_DST:
         match=1
 
     if pcap.haslayer(Ether):
-        if not query or args.Ether or layer > 1 or match==1:
+        if not query or args.Ether or layer > 1 or match==1 or match2==1:
             print ("\r\nEther Src: " + pcap[Ether].src + " - Ether Dst: " + pcap[Ether].dst + " - Ether Type: " + str(hex(pcap[Ether].type)))
     
 
     if pcap.haslayer(IP):
-        if not query or args.IP or layer > 2 or match==1:
-            print ("IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl))
+        if not query or args.IP or layer > 2 or match==1 or match2==1:
+            print ("IP Src: " + pcap[IP].src + " - IP Dst: " + pcap[IP].dst + " - IP ID: " + str(pcap[IP].id) + " - TTL: " + str(pcap[IP].ttl) + " - Protocol: " + str(pcap[IP].proto))
         
 
     if pcap.haslayer(UDP):
-        if not query or args.UDP or layer > 3 or match==1:
+        if not query or args.UDP or layer > 3 or match==1 or match2==1:
             print ("UDP - Source Port: " + str(pcap[UDP].sport) + "  Destination Port: " + str(pcap[UDP].dport))   
         
 
@@ -66,7 +69,7 @@ def process_pcap(pcap):
         acknowledgement_number = pcap[TCP].ack
         timestamp = pcap[TCP].time
         payload_len += len(pcap[TCP].payload)
-        if not query or args.TCP or layer > 3 or match==1:
+        if not query or args.TCP or layer > 3 or match==1 or match2==1:
         
         
             print ("TCP - Source Port: " + str(pcap[TCP].sport) + "  Destination Port: " + str(pcap[TCP].dport))
@@ -94,22 +97,22 @@ def process_pcap(pcap):
                    
 
     if pcap.haslayer(HTTP):  
-        if not query or args.HTTP or layer > 4 or match==1:
+        if not query or args.HTTP or layer > 4 or match==1 or match2==1:
             print ("HTTP - " + str(pcap[HTTP]))
         
 
     if pcap.haslayer(ARP):  
-        if not query or args.ARP or layer > 1 or match==1: 
+        if not query or args.ARP or layer > 1 or match==1 or match2==1: 
             print ("ARP - "  + "Hardware Source: " + pcap[ARP].hwsrc + " -  Source Addr: " + pcap[ARP].psrc + " - op: " + str(pcap[ARP].op))
         
 
     if pcap.haslayer(DNS):
-        if not query or args.DNS or layer > 4 or match==1:   
+        if not query or args.DNS or layer > 4 or match==1 or match2==1:   
             print ("DNS - "  + str(pcap[DNS].qd), str(pcap[DNS].an), str(pcap[DNS].ns), str(pcap[DNS].ar) + "\r\n")
     
 
     if pcap.haslayer(TLS): 
-        if not query or args.TLS or layer > 4 or match==1:  
+        if not query or args.TLS or layer > 4 or match==1 or match2==1:  
             print ("TLS - "  + "Type: " + str(pcap[TLS].type) + " -  Version: " + str(pcap[TLS].version))
             if "TLSApplicationData" not in  str(pcap[TLS].msg):
                 print (" -  Message: " + str(pcap[TLS].msg))
